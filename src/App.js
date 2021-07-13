@@ -1,25 +1,31 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import Form from './components/Form';
+import HistoryList from './components/HistoryList';
+import useHistory from './hooks/useHistory'
+import uuid from 'uuid'
+export default function App () {
+  const [history, setHistory] = useHistory()
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  function addToHistory(item) {
+    item.id = uuid()
+    item.created = new Date()
+    const newHistory = [...history]
+    newHistory.unshift(item)
+    setHistory(newHistory)
+    localStorage.setItem('db', JSON.stringify(newHistory))
+  }
+  function clearHistory() {
+    localStorage.removeItem('db')
+    setHistory([])
+  }
+  return(
+    <div>
+      <Form submit={addToHistory}/>
+      <HistoryList items={history} clear={clearHistory}/>
     </div>
-  );
-}
+)}
 
-export default App;
+
+// export default App;
